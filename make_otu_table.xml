@@ -3,7 +3,9 @@
 <description>Make an otu or zotu table</description>
 -->
     <requirements>
-        <requirement type="package" version="1.14">dada2env</requirement>
+        <requirement type="package" version="1.79">biopython</requirement>
+	<requirement type="package" version="2.18.0">vsearch</requirement>
+	<requirement type="package" version="1.07.1">bc</requirement>
     </requirements>
 <command>
 <![CDATA[
@@ -122,7 +124,7 @@ $algo.cluster_algo
 				</conditional>
 				<param name="output_label" type="text" value="" label="History output name" />
 </inputs>
-<code file="/home/galaxy/Tools/galaxy-tool-make-otu-table/dynamic_xml.py"/>
+<code file="/galaxy_fs/tools/galaxy-tool-make-otu-table/dynamic_xml.py"/>
 
 <outputs>
 	<data format="zip" type="data" name="output_zip" label="$input.display_name zip">

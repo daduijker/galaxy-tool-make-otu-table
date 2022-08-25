@@ -1,6 +1,6 @@
 #!/bin/bash
 
-outlocation=$(mktemp -d /media/GalaxyData/database/files/XXXXXX)
+outlocation=$(mktemp -d /galaxy_fs/tmp/XXXXXXXX)
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
 
 if [ $3 == "cluster_otus" ]
