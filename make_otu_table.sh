@@ -1,6 +1,6 @@
 #!/bin/bash
 
-outlocation=$(mktemp -d /tmp/XXXXXX)
+outlocation=$(mktemp -d)
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
 
 # sanity check
