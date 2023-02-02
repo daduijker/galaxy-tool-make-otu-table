@@ -1,6 +1,6 @@
 #!/bin/bash
 
-outlocation=$(mktemp -d /data/files/XXXXXX)
+outlocation=$(mktemp -d /tmp/XXXXXX)
 SCRIPTDIR=$(dirname "$(readlink -f "$0")")
 
 # sanity check
@@ -50,18 +50,19 @@ fi
 #cat $outlocation/"report.txt" >> $outlocation"/log.log"
 
 #output files
-if [ $4 ]
+if [ $4 != "XXXX" ]
 then
     mv $outlocation"/all_output.zip" $4 && [ -f $outlocation"/all_output.zip" ]
 fi
-if [ $5 ]
+if [ $5 != "XXXX" ]
 then
     mv $outlocation"/log.log" $5 && [ -f $outlocation"/log.log" ]
 fi
 
 # Output Otu sequences as fasta file
-if [ $6 ]
+if [ $6 != "XXXX" ]
 then
+	echo $6
 	cp $outlocation"/otu_sequences.fa" $6 && [ -f $outlocation"/otu_sequences.fa" ]
 	# convert interleaved or multiline fasta to singleline
 	cat $outlocation"/otu_sequences.fa" | 
@@ -86,7 +87,7 @@ fi
 
 
 # Output Otu table
-if [ $7 ]
+if [ $7 != "XXXX" ]
 then
 	# it is not $7 that gets changed but the actual file ###.dat
 	cp $outlocation"/otutab.txt" $7 && [ -f $outlocation"/otutab.txt" ]
@@ -100,13 +101,15 @@ then
 	# create a string of zeros 
 	otu_digit_string=$(echo $(yes "0" | head -n "$otu_digits") | tr -d " ")
 	# padding zeros
-	cat $outlocation"/otutab.txt" | sed "s/\(^Otu\)\([0-9]\)/\1$otu_digit_string\2/g; s/0*\([0-9]\{$otu_digits,\}\)/\1/g" | sort -n > $outlocation"/otutab_DG.txt"
+	read -r firstline<$outlocation"/otutab.txt" && echo "$firstline" > $outlocation"/otutab_DG.txt"
+	sed -i '1d' $outlocation"/otutab.txt"
+	cat $outlocation"/otutab.txt" | sed "s/\(^Otu\)\([0-9]\)/\1$otu_digit_string\2/g; s/0*\([0-9]\{$otu_digits,\}\)/\1/g" | sort -n >> $outlocation"/otutab_DG.txt"
 	rm $outlocation"/otutab.txt"
 	cp $outlocation"/otutab_DG.txt" $7 && [ -f $outlocation"/otutab_DG.txt" ]
 fi
 
 # OUtput Bioom file
-if [ $8 ] && [ -f $outlocation"/bioom.json" ] && [ -f $outlocation"/bioom.json" ]
+if [ $8 != "XXXX" ] && [ -f $outlocation"/bioom.json" ] && [ -f $outlocation"/bioom.json" ]
 then
     mv $outlocation"/bioom.json" $8 && [ -f $outlocation"/bioom.json" ]
 fi
