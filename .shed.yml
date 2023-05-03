@@ -1,0 +1,8 @@
+categories: 
+  - Metagenomics
+description: Make an otu or zotu table
+homepage_url: https://github.com/naturalis/galaxy-tool-make-otu-table
+name: naturalis_make_otu_table
+owner: duijker.d
+remote_repository_url: https://gitlab.com/LCAB-Bioinformatics/galaxy/naturalis/galaxy-tool-make-otu-table
+type: unrestricted
