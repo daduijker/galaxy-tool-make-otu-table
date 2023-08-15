@@ -1,7 +1,31 @@
-<tool id="make_otu_table" name="Make otu table">
+<tool version="0.1.2+galaxy0" id="make_otu_table" name="Make otu table">
 <!--
 <description>Make an otu or zotu table</description>
 -->
+	<macros>
+		<macro name="output_file_selection">
+			<param name="output_selection_otu_sequence" type="boolean" label="Otu sequences fasta file" checked="yes" truevalue="yes" falsevalue="no"/>
+			<param name="output_selection_otutab" type="boolean" label="Otu table" checked="yes" truevalue="yes" falsevalue="no"/>
+			<param name="output_selection_log" type="boolean" label="Log file" checked="yes" truevalue="yes" falsevalue="no"/>
+			<param name="output_selection_bioom" type="boolean" label="Bioom file" checked="no" truevalue="yes" falsevalue="no"/>
+			<param name="output_selection_file_zip" type="boolean" label="zip file" checked="no" truevalue="yes" falsevalue="no"/>
+		</macro>
+		<macro name="unoise_macro">
+			<param name="unoise_alpha" type="float" label="unoise_alpha"  value="2.0" min="0.1" max="20"/>
+			<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
+		</macro>
+		<macro name="vsearch_unoise_macro">
+			<param name="unoise_alpha" type="float" label="unoise_alpha"  value="2.0" min="0.1" max="20"/>
+			<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
+		</macro>
+		<macro name="vsearch_macro">
+			<param name="cluster_id" type="float" label="Cluster id" value="0.97" min="0.1" max="1"/>
+			<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
+		</macro>
+		<macro name="cluster_otus_macro">
+			<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
+		</macro>
+	</macros>
     <requirements>
 		<requirement type="package" version="1.14.0">bioconductor-dada2</requirement> 
 		<requirement type="package" version="1.76">biopython</requirement> 
@@ -11,6 +35,7 @@
 		<requirement type="package">bc</requirement>
     </requirements>
 <command>
+
 <![CDATA[
 bash '$__tool_directory__/make_otu_table.sh'
 $input
@@ -55,30 +80,6 @@ $algo.cluster_algo
 	#end if
 	]]>
 </command>
-<macros>
-	<macro name="output_file_selection">
-		<param name="output_selection_otu_sequence" type="boolean" label="Otu sequences fasta file" checked="yes" truevalue="yes" falsevalue="no"/>
-		<param name="output_selection_otutab" type="boolean" label="Otu table" checked="yes" truevalue="yes" falsevalue="no"/>
-		<param name="output_selection_log" type="boolean" label="Log file" checked="yes" truevalue="yes" falsevalue="no"/>
-		<param name="output_selection_bioom" type="boolean" label="Bioom file" checked="no" truevalue="yes" falsevalue="no"/>
-		<param name="output_selection_file_zip" type="boolean" label="zip file" checked="no" truevalue="yes" falsevalue="no"/>
-	</macro>
-	<macro name="unoise_macro">
-		<param name="unoise_alpha" type="float" label="unoise_alpha"  value="2.0" min="0.1" max="20"/>
-		<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
-	</macro>
-	<macro name="vsearch_unoise_macro">
-		<param name="unoise_alpha" type="float" label="unoise_alpha"  value="2.0" min="0.1" max="20"/>
-		<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
-	</macro>
-	<macro name="vsearch_macro">
-		<param name="cluster_id" type="float" label="Cluster id" value="0.97" min="0.1" max="1"/>
-		<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
-	</macro>
-	<macro name="cluster_otus_macro">
-		<param name="minsize" type="integer" label="Minimal accepted abundance before clustering" value="8" min="1" max="100"/>
-	</macro>
-</macros>
 <inputs>
 <param format="zip" name="input" type="data" label="zip file containing fasta or fastq files"/>
                 <!--
@@ -127,10 +128,10 @@ $algo.cluster_algo
 				</conditional>
 				<param name="output_label" type="text" value="" label="History output name" />
 </inputs>
-<code file="/galaxy_fs/tools/galaxy-tool-make-otu-table/dynamic_xml.py"/>
+<code file="dynamic_xml.py"/>
 
 <outputs>
-	<data format="zip" type="data" name="output_zip" label="$input.display_name zip">
+	<data format="zip" name="output_zip" label="$input.display_name zip">
 		<filter>output_type['output_files'] == "out_zip" or output_type['output_selection_file_zip'] and output_label == ''</filter>
 	</data>
 	<data format="txt" name="output_log" label="$input.display_name log">
@@ -147,7 +148,7 @@ $algo.cluster_algo
 	</data>
 
 	<!-- CUSTOM OUTPUT NAME -->
-	<data format="zip" type="data" name="output_zip_custom_name" label="$output_label zip">
+	<data format="zip" name="output_zip_custom_name" label="$output_label zip">
 		<filter>output_type['output_files'] == "out_zip" or output_type['output_selection_file_zip'] and output_label != ''</filter>
 	</data>
 	<data format="txt" name="output_log_custom_name" label="$output_label log">
@@ -163,12 +164,6 @@ $algo.cluster_algo
 		<filter>output_type['output_files'] == "out_files" and output_type['output_selection_bioom'] and output_label != ''</filter>
 	</data>
 </outputs>
-<tests>
-<test>
-<param name="test_input" value="test_input.txt"/>
-<output name="test_outout" file="test_output.txt"/>
-</test>
-</tests>
 <help>
 </help>
 <citations>

@@ -62,6 +62,11 @@ fi
 # Output Otu sequences as fasta file
 if [ $6 != "XXXX" ]
 then
+	if [[ ! -s $outlocation"/otu_sequences.fa" ]]
+	then
+		echo "The otu_sequences.fa file is empty. Check the logs for errors."
+		exit 1
+	fi
 	echo $6
 	cp $outlocation"/otu_sequences.fa" $6 && [ -f $outlocation"/otu_sequences.fa" ]
 	# convert interleaved or multiline fasta to singleline
@@ -76,7 +81,7 @@ then
 	max_length=$(cat $outlocation"/otu_sequences_DG.fa"| egrep "^>Otu" | awk '{print length($1)}' | sort -n | uniq | tail -n1) 
 	# max number of digits of Otu label (substract "Otu" from max_length Otu label)
 	otu_digits=$(echo $max_length-4 | bc)
-	# create a string of zeros 
+	# create a string of zeros
 	otu_digit_string=$(echo $(yes "0" | head -n "$otu_digits") | tr -d " ")
 	# padding zeros
 	cat $outlocation"/otu_sequences_DG.fa" | 
@@ -89,6 +94,11 @@ fi
 # Output Otu table
 if [ $7 != "XXXX" ]
 then
+	if [[ ! -s $outlocation"/otutab.txt" ]]
+	then
+		echo "The otutab.txt file is empty. Check the logs for errors."
+		exit 1
+	fi
 	# it is not $7 that gets changed but the actual file ###.dat
 	cp $outlocation"/otutab.txt" $7 && [ -f $outlocation"/otutab.txt" ]
 	#------------------------------------------------------------------
