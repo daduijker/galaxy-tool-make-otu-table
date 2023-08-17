@@ -152,7 +152,7 @@ def dada2_cluster(outputFolder):
                 output.write(record.format("fastq"))
     admin_log(outputFolder, out="Sequences with N bases found and removed: "+str(ncount), function="remove N bases")
 
-    out, error = Popen(["Rscript", "/galaxy_fs/tools/galaxy-tool-make-otu-table/dada2.R", outputFolder + "/combined_dada_filtered.fastq", outputFolder + "/otu_sequences.fa"], stdout=PIPE, stderr=PIPE).communicate()
+    out, error = Popen(["Rscript", os.path.dirname(os.path.abspath(sys.argv[0])) + "/" + "dada2.R", outputFolder + "/combined_dada_filtered.fastq", outputFolder + "/otu_sequences.fa"], stdout=PIPE, stderr=PIPE).communicate()
     admin_log(outputFolder, out=out.decode(), error=error.decode(), function="dada2")
 
 def usearch_otu_tab(outputFolder):
