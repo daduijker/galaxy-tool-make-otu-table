@@ -16,7 +16,7 @@ requiredArguments.add_argument('-i', '--input', metavar='input zipfile', dest='i
 requiredArguments.add_argument('-t', '--input_type', metavar='FASTQ or FASTA input', dest='input_type', type=str,
                                help='Sets the input type, FASTQ or FASTA', required=True)
 requiredArguments.add_argument('-c', '--cluster_command', metavar='otu or zotu(UNOISE)', dest='cluster', type=str,
-                               help='Choice of clustering, usearch -cluster_otus or unoise', required=True, choices=['unoise', 'cluster_otus', 'vsearch', 'dada2','vsearch_unoise', 'vsearch_unoise_no_chimera_check', 'vsearch_no_chimera_check'])
+                               help='Choice of clustering, usearch -cluster_otus or unoise', required=True, choices=['unoise', 'cluster_otus', 'vsearch', 'dada2', 'dada2_nanopore', 'vsearch_unoise', 'vsearch_unoise_no_chimera_check', 'vsearch_no_chimera_check'])
 requiredArguments.add_argument('-of', '--folder_output', metavar='folder output', dest='out_folder', type=str,
                                help='Folder name for the output files', required=True)
 requiredArguments.add_argument('-a', '--unoise_alpha', metavar='unoise_alpha', dest='unoise_alpha', type=str,
@@ -78,9 +78,9 @@ def admin_log(outputFolder, out=None, error=None, function=""):
 
 def remove_files(outputFolder):
     call(["rm", "-rf", outputFolder+"/fasta"])
-    if args.cluster != "dada2":
+    if args.cluster != "dada2" or args.cluster != "dada2_nanopore":
         call(["rm", outputFolder+"/combined.fa", outputFolder+"/uniques.fa"])
-    if args.cluster == "dada2":
+    if args.cluster == "dada2" or args.cluster == "dada2_nanopore":
         call(["rm", outputFolder + "/combined_dada.fastq", outputFolder + "/combined_dada_filtered.fastq"])
 
 def vsearch_derep_fulllength(outputFolder):
@@ -155,6 +155,19 @@ def dada2_cluster(outputFolder):
     out, error = Popen(["Rscript", os.path.dirname(os.path.abspath(sys.argv[0])) + "/" + "dada2.R", outputFolder + "/combined_dada_filtered.fastq", outputFolder + "/otu_sequences.fa"], stdout=PIPE, stderr=PIPE).communicate()
     admin_log(outputFolder, out=out.decode(), error=error.decode(), function="dada2")
 
+def dada2_nanopore_cluster(outputFolder):
+    ncount = 0
+    with open(outputFolder + "/combined_dada.fastq") as handle, open(outputFolder +"/combined_dada_filtered.fastq", "a") as output:
+        for record in SeqIO.parse(handle, "fastq"):
+            if "N" in str(record.seq):
+                ncount += 1
+            else:
+                output.write(record.format("fastq"))
+    admin_log(outputFolder, out="Sequences with N bases found and removed: "+str(ncount), function="remove N bases")
+
+    out, error = Popen(["Rscript", os.path.dirname(os.path.abspath(sys.argv[0])) + "/" + "dada2_nanopore.R", outputFolder + "/combined_dada_filtered.fastq", outputFolder + "/otu_sequences.fa", outputFolder + "/combined_dada_filterandtrim_filtered.fastq"], stdout=PIPE, stderr=PIPE).communicate()
+    admin_log(outputFolder, out=out.decode(), error=error.decode(), function="dada2")
+
 def usearch_otu_tab(outputFolder):
     out, error = Popen(["vsearch", "--usearch_global", outputFolder+"/combined.fa", "--db", outputFolder+"/otu_sequences.fa", "--id", "0.97", "--minseqlength", "1", "--otutabout", outputFolder+"/otutab.txt", "--biomout", outputFolder+"/bioom.json"], stdout=PIPE, stderr=PIPE).communicate()
     admin_log(outputFolder, out=out.decode(), error=error.decode(), function="otutab")
@@ -193,6 +206,8 @@ def main():
     extension_check(outputFolder)
     if args.cluster == "dada2":
         dada2_cluster(outputFolder)
+    if args.cluster == "dada2_nanopore":
+        dada2_nanopore_cluster(outputFolder)
     else:
         vsearch_derep_fulllength(outputFolder)
         usearch_cluster(outputFolder)

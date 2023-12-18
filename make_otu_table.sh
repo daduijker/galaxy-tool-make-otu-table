@@ -23,6 +23,10 @@ if [ $3 == "dada2" ]
 then
 python $SCRIPTDIR"/make_otu_table.py" -i $1 -t $2 -c $3 -of $outlocation
 fi
+if [ $3 == "dada2_nanopore" ]
+then
+python $SCRIPTDIR"/make_out_table.py" -i $1 -t $2 -c $3 -of $outlocation
+fi
 if [ $3 == "unoise" ]
 then
 python $SCRIPTDIR"/make_otu_table.py" -i $1 -t $2 -c $3 -of $outlocation -a ${9} -abundance_minsize "${10}"
