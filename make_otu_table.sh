@@ -25,7 +25,7 @@ python $SCRIPTDIR"/make_otu_table.py" -i $1 -t $2 -c $3 -of $outlocation
 fi
 if [ $3 == "dada2_nanopore" ]
 then
-python $SCRIPTDIR"/make_out_table.py" -i $1 -t $2 -c $3 -of $outlocation
+python $SCRIPTDIR"/make_otu_table.py" -i $1 -t $2 -c $3 -of $outlocation -dada2_maxee "${9}" -dada2_truncq "${10}"
 fi
 if [ $3 == "unoise" ]
 then

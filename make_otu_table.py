@@ -27,6 +27,10 @@ requiredArguments.add_argument('-cluster_size', '--cluster_size', metavar='Minim
                                help='Minimal cluster size', required=False, nargs='?', default="1")
 requiredArguments.add_argument('-abundance_minsize', metavar='minimal abundance', dest='abundance_minsize', type=str,
                                help='unoise minsize', required=False, nargs='?', default="1")
+requiredArguments.add_argument('-dada2_maxee', metavar='max expected errors', dest='dada2_maxee', type=str,
+                               help='dada2 maxee', required=False, nargs='?', default="10")
+requiredArguments.add_argument('-dada2_truncq', metavar='truncate reads after q', dest='dada2_truncq', type=str,
+                               help='dada2 truncq', required=False, nargs='?', default="0")
 args = parser.parse_args()
 
 def check_if_fasta(file):
@@ -39,7 +43,7 @@ def extension_check(outputFolder):
     fileFound = False
     for x in files:
         if args.input_type == "FASTQ":
-            if os.path.splitext(x)[1].lower() == ".fastq" or os.path.splitext(x)[1] == ".fq":
+            if os.path.splitext(x)[1].lower() == ".fastq" or os.path.splitext(x)[1] == ".fq" or os.path.splitext(x)[1] == ".fastqsanger":
                 fastafile = os.path.splitext(x)[0].translate((str.maketrans("-. ", "___"))) + ".fa"
                 error = Popen(["awk '{if(NR%4==1) {printf(\">%s\\n\",substr($0,2));} else if(NR%4==2) print;}' " + outputFolder + "/files/" + x + " > "+outputFolder+"/fasta/" + fastafile], stdout=PIPE, stderr=PIPE, shell=True).communicate()[1].strip()
                 admin_log(outputFolder, error=error.decode(), function="extension_check")
@@ -78,7 +82,7 @@ def admin_log(outputFolder, out=None, error=None, function=""):
 
 def remove_files(outputFolder):
     call(["rm", "-rf", outputFolder+"/fasta"])
-    if args.cluster != "dada2" or args.cluster != "dada2_nanopore":
+    if args.cluster != "dada2" and args.cluster != "dada2_nanopore":
         call(["rm", outputFolder+"/combined.fa", outputFolder+"/uniques.fa"])
     if args.cluster == "dada2" or args.cluster == "dada2_nanopore":
         call(["rm", outputFolder + "/combined_dada.fastq", outputFolder + "/combined_dada_filtered.fastq"])
@@ -165,7 +169,7 @@ def dada2_nanopore_cluster(outputFolder):
                 output.write(record.format("fastq"))
     admin_log(outputFolder, out="Sequences with N bases found and removed: "+str(ncount), function="remove N bases")
 
-    out, error = Popen(["Rscript", os.path.dirname(os.path.abspath(sys.argv[0])) + "/" + "dada2_nanopore.R", outputFolder + "/combined_dada_filtered.fastq", outputFolder + "/otu_sequences.fa", outputFolder + "/combined_dada_filterandtrim_filtered.fastq"], stdout=PIPE, stderr=PIPE).communicate()
+    out, error = Popen(["Rscript", os.path.dirname(os.path.abspath(sys.argv[0])) + "/" + "dada2_nanopore.R", outputFolder + "/combined_dada_filtered.fastq", outputFolder + "/otu_sequences.fa", outputFolder + "/combined_dada_filterandtrim_filtered.fastq", args.dada2_maxee, args.dada2_truncq], stdout=PIPE, stderr=PIPE).communicate()
     admin_log(outputFolder, out=out.decode(), error=error.decode(), function="dada2")
 
 def usearch_otu_tab(outputFolder):

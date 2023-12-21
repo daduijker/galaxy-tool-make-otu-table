@@ -1,4 +1,4 @@
-<tool version="0.1.3" id="make_otu_table" name="Make otu table">
+<tool version="0.1.4" id="make_otu_table" name="Make otu table">
 <!--
 <description>Make an otu or zotu table</description>
 -->
@@ -27,7 +27,7 @@
 		</macro>
 	</macros>
     <requirements>
-		<requirement type="package" version="1.14.0">bioconductor-dada2</requirement> 
+		<requirement type="package" version="1.28.0">bioconductor-dada2</requirement> 
 		<requirement type="package" version="1.76">biopython</requirement> 
 		<requirement type="package" version="2.14.2">vsearch</requirement> 
 		<requirement type="package" version="6.0">unzip</requirement>
@@ -55,6 +55,10 @@ $algo.cluster_algo
 	$output_otutab_custom_name
 	$output_bioom_custom_name
 #end if
+	#if $algo.cluster_algo == "dada2_nanopore"
+		$algo.maxee
+		$algo.truncq
+	#end if
 	#if $algo.cluster_algo == "unoise"
 		$algo.unoise_alpha
 	    $algo.minsize
@@ -98,6 +102,10 @@ $algo.cluster_algo
 						<option value="vsearch_unoise">VSEARCH unoise with chimera checking (--uchime3_denovo)</option>
 						<option value="vsearch_unoise_no_chimera_check">VSEARCH unoise without chimera checking</option>
 					</param>
+					<when value="dada2_nanopore">
+						<param name="maxee" type="integer" min="0" max="10000" value="10" label="Discard reads with higher expected errors than this value." help="Expected errors are calculated from the nominal definition of the quality score: EE = sum(10^(-Q/10))" />
+						<param name="truncq" type="integer" min="0" max="100" value="0" label="Truncate reads at the first instance of quality score less than or equal to this parameter."/>
+					</when>
 					<when value="unoise">
 						<expand macro="unoise_macro"/>
 					</when>
