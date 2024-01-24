@@ -35,8 +35,17 @@
 		<requirement type="package">bc</requirement>
     </requirements>
 <command>
-
 <![CDATA[
+#if $in_format.select_in_format == "zip"
+	#set input = $in_format.input
+#elif $in_format.select_in_format == "fastafastq"
+	#for $collection_item in $in_format.input
+		zip collection_as_zip.zip -j $collection_item
+	#end for
+	#set input = collection_as_zip.zip
+#end if
+
+
 bash '$__tool_directory__/make_otu_table.sh'
 $input
 $input_type
@@ -85,7 +94,18 @@ $algo.cluster_algo
 	]]>
 </command>
 <inputs>
-<param format="zip" name="input" type="data" label="zip file containing fasta or fastq files"/>
+	<conditional name="in_format">
+		<param name="select_in_format" type="select" multiple="false" label="Input">
+			<option value="zip" selected="true">ZIP file</option>
+			<option value="fastafastq">fasta or fastq file collection</option>
+		</param>
+		<when value="zip">
+			<param format="zip" name="input" type="data" label="zip file containing fasta or fastq files"/>
+		</when>
+		<when value="fastafastq">
+			<param format="fasta,fastqsanger,fastq" name="input" type="collection" label="fasta or fastq files"/>
+		</when>
+	</conditional>
                 <!--
 				<param name="input_type" type="select" multiple="false" label="Input type">
 					<option value="FASTA">fasta</option>
