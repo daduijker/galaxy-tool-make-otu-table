@@ -95,7 +95,7 @@ $algo.cluster_algo
 	]]>
 </command>
 <inputs>
-	<conditional name="in_format">
+	<!-- <conditional name="in_format">
 		<param name="select_in_format" type="select" multiple="false" label="Input">
 			<option value="zip" selected="true">ZIP file</option>
 			<option value="fastafastq">fasta or fastq file collection</option>
@@ -106,7 +106,7 @@ $algo.cluster_algo
 		<when value="fastafastq">
 			<param format="fasta,fastqsanger,fastq" name="input" type="data_collection" label="fasta or fastq files"/>
 		</when>
-	</conditional>
+	</conditional> -->
                 <!--
 				<param name="input_type" type="select" multiple="false" label="Input type">
 					<option value="FASTA">fasta</option>
