@@ -41,6 +41,7 @@
 #elif $in_format.select_in_format == "fastafastq"
 	#for $collection_item in $in_format.input
 		zip collection_as_zip.zip -j $collection_item
+		&&
 	#end for
 	#set input = collection_as_zip.zip
 #end if
