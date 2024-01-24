@@ -37,14 +37,14 @@
 <command>
 <![CDATA[
 
-#if $in_format.select_in_format == "zip"
-	#set input = $in_format.input
-#elif $in_format.select_in_format == "fastafastq"
+#if str( $in_format.select_in_format ) == "zip"
+	#set $input = $in_format.input
+#elif str( $in_format.select_in_format ) == "fastafastq"
 	#for $collection_item in $in_format.input
 		zip collection_as_zip.zip -j $collection_item
 		&&
 	#end for
-	#set input = collection_as_zip.zip
+	#set $input = collection_as_zip.zip
 #end if
 
 
