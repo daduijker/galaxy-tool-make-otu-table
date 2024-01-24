@@ -148,6 +148,8 @@ $algo.cluster_algo
 						<option value="out_zip">Output as zip</option>
 						<option value="out_files" selected="true">Output as seprated files</option>
 					</param>
+					<when value="out_zip">
+					</when>
 					<when value="out_files">
 						<expand macro="output_file_selection"/>
 					</when>
