@@ -36,15 +36,16 @@
     </requirements>
 <command>
 <![CDATA[
-#if $in_format.select_in_format == "zip"
-	#set input = $in_format.input
-#elif $in_format.select_in_format == "fastafastq"
-	#for $collection_item in $in_format.input
-		zip collection_as_zip.zip -j $collection_item
-		&&
-	#end for
-	#set input = collection_as_zip.zip
-#end if
+
+## #if $in_format.select_in_format == "zip"
+## 	#set input = $in_format.input
+## #elif $in_format.select_in_format == "fastafastq"
+## 	#for $collection_item in $in_format.input
+## 		zip collection_as_zip.zip -j $collection_item
+## 		&&
+## 	#end for
+## 	#set input = collection_as_zip.zip
+## #end if
 
 
 bash '$__tool_directory__/make_otu_table.sh'
@@ -95,7 +96,7 @@ $algo.cluster_algo
 	]]>
 </command>
 <inputs>
-	<!-- <conditional name="in_format">
+	<conditional name="in_format">
 		<param name="select_in_format" type="select" multiple="false" label="Input">
 			<option value="zip" selected="true">ZIP file</option>
 			<option value="fastafastq">fasta or fastq file collection</option>
@@ -106,12 +107,12 @@ $algo.cluster_algo
 		<when value="fastafastq">
 			<param format="fasta,fastqsanger,fastq" name="input" type="data_collection" label="fasta or fastq files"/>
 		</when>
-	</conditional> -->
-                <!--
+	</conditional>
+                
 				<param name="input_type" type="select" multiple="false" label="Input type">
 					<option value="FASTA">fasta</option>
 					<option value="FASTQ" selected="true">fastq</option>
-				</param>-->
+				</param>
 	            <conditional name="algo">
 					<param name="cluster_algo" type="select" multiple="false" label="Clustering">
 						<option value="unoise" selected="true">UNOISE</option>
