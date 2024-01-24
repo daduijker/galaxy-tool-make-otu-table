@@ -103,7 +103,7 @@ $algo.cluster_algo
 			<param format="zip" name="input" type="data" label="zip file containing fasta or fastq files"/>
 		</when>
 		<when value="fastafastq">
-			<param format="fasta,fastqsanger,fastq" name="input" type="collection" label="fasta or fastq files"/>
+			<param format="fasta,fastqsanger,fastq" name="input" type="data_collection" label="fasta or fastq files"/>
 		</when>
 	</conditional>
                 <!--
