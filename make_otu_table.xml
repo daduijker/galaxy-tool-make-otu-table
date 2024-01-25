@@ -37,19 +37,19 @@
 <command>
 <![CDATA[
 
-## #if str( $in_format.select_in_format ) == "zip"
-## 	#set $input = $in_format.input
-## #elif str( $in_format.select_in_format ) == "fastafastq"
-## 	#for $collection_item in $in_format.input
-## 		zip collection_as_zip.zip -j $collection_item
-## 		&&
-## 	#end for
-## 	#set $input = collection_as_zip.zip
-## #end if
+#if str( $in_format.select_in_format ) == "zip":
+	#set $input_zip = $in_format.input
+#elif str( $in_format.select_in_format ) == "fastafastq":
+	#for $collection_item in $in_format.input
+		zip collection_as_zip.zip -j $collection_item
+		&&
+	#end for
+	#set $input_zip = collection_as_zip.zip
+#end if
 
 
 bash '$__tool_directory__/make_otu_table.sh'
-$input
+$input_zip
 $input_type
 $algo.cluster_algo
 #if not $output_label
@@ -157,21 +157,20 @@ $algo.cluster_algo
 				<param name="output_label" type="text" value="" label="History output name" />
 </inputs>
 <code file="dynamic_xml.py"/>
-
 <outputs>
-	<data format="zip" name="output_zip" label="$input.display_name zip">
+	<data format="zip" name="output_zip" label="${tool.name} on ${on_string} zip">
 		<filter>output_type['output_files'] == "out_zip" or output_type['output_selection_file_zip'] and output_label == ''</filter>
 	</data>
-	<data format="txt" name="output_log" label="$input.display_name log">
+	<data format="txt" name="output_log" label="${tool.name} on ${on_string} log">
 		<filter>output_type['output_files'] == "out_files" and output_type['output_selection_log'] and output_label == ''</filter>
 	</data>
-	<data format="fasta" name="output_otu_sequence" label="$input.display_name sequences">
+	<data format="fasta" name="output_otu_sequence" label="${tool.name} on ${on_string} sequences">
 		<filter>output_type['output_files'] == "out_files" and output_type['output_selection_otu_sequence'] and output_label == ''</filter>
 	</data>
-	<data format="tabular" name="output_otutab" label="$input.display_name otu table">
+	<data format="tabular" name="output_otutab" label="${tool.name} on ${on_string} otu table">
 		<filter>output_type['output_files'] == "out_files" and output_type['output_selection_otutab'] and output_label == ''</filter>
 	</data>
-	<data format="txt" name="output_bioom" label="$input.display_name bioom file">
+	<data format="txt" name="output_bioom" label="${tool.name} on ${on_string} bioom file">
 		<filter>output_type['output_files'] == "out_files" and output_type['output_selection_bioom'] and output_label == ''</filter>
 	</data>
 
