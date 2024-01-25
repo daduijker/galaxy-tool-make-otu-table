@@ -1,4 +1,4 @@
-<tool version="0.1.4" id="make_otu_table" name="Make otu table">
+<tool version="0.1.5" id="make_otu_table" name="Make otu table">
 <!--
 <description>Make an otu or zotu table</description>
 -->
