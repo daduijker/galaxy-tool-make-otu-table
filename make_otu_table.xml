@@ -44,7 +44,7 @@
 		zip collection_as_zip.zip -j $collection_item
 		&&
 	#end for
-	#set $input_zip = collection_as_zip.zip
+	#set $input_zip = "collection_as_zip.zip"
 #end if
 
 
