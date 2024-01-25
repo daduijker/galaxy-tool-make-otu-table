@@ -36,14 +36,18 @@
     </requirements>
 <command>
 <![CDATA[
-
+#if str( $input_type ) == "FASTQ":
+	#set $item_extension = ".fastq"
+#elif str( $input_type ) == "FASTA":
+	#set $item_extension = ".fasta"
+#end if
 #if str( $in_format.select_in_format ) == "zip":
 	#set $input_zip = $in_format.input
 #elif str( $in_format.select_in_format ) == "fastafastq":
 	#for $collection_item in $in_format.input
 		mkdir -p sequence_files
 		&&
-		ln -s $collection_item ./sequence_files/$collection_item.name
+		ln -s $collection_item ./sequence_files/$collection_item.name$item_extension
 		&&
 	#end for
 	zip collection_as_zip.zip -j ./sequence_files/*
