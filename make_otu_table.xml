@@ -116,53 +116,56 @@ $algo.cluster_algo
 			<param format="fasta,fastqsanger,fastq" name="input" type="data_collection" label="fasta or fastq files"/>
 		</when>
 	</conditional>
-	            <conditional name="algo">
-					<param name="cluster_algo" type="select" multiple="false" label="Clustering">
-						<option value="unoise" selected="true">UNOISE</option>
-						<option value="dada2">DADA2</option>
-						<option value="dada2_nanopore">DADA2 for Nanopore data (experimental)</option>
-						<option value="cluster_otus">cluster_otus (UPARSE)</option>
-						<option value="vsearch">VSEARCH with chimera checking (--uchime_denovo)</option>
-                                                <option value="vsearch_no_chimera_check">VSEARCH without chimera checking</option>
-						<option value="vsearch_unoise">VSEARCH unoise with chimera checking (--uchime3_denovo)</option>
-						<option value="vsearch_unoise_no_chimera_check">VSEARCH unoise without chimera checking</option>
-					</param>
-					<when value="dada2_nanopore">
-						<param name="maxee" type="integer" min="0" max="10000" value="10" label="Discard reads with higher expected errors than this value." help="Expected errors are calculated from the nominal definition of the quality score: EE = sum(10^(-Q/10))" />
-						<param name="truncq" type="integer" min="0" max="100" value="0" label="Truncate reads at the first instance of quality score less than or equal to this parameter."/>
-					</when>
-					<when value="unoise">
-						<expand macro="unoise_macro"/>
-					</when>
-					<when value="vsearch">
-						<expand macro="vsearch_macro"/>
-					</when>
-          <when value="vsearch_no_chimera_check">
-            <expand macro="vsearch_macro"/>
-          </when>
-					<when value="cluster_otus">
-						<expand macro="cluster_otus_macro"/>
-					</when>
-					<when value="vsearch_unoise">
-						<expand macro="vsearch_unoise_macro"/>
-					</when>
-					<when value="vsearch_unoise_no_chimera_check">
-						<expand macro="vsearch_unoise_macro"/>
-					</when>
-				</conditional>
-	            <param name="input_type" type="select" multiple="false" label="Input type" dynamic_options="input_type_filter(algo)"/>
-				<conditional name="output_type">
-					<param name="output_files" type="select" multiple="false" label="Output">
-						<option value="out_zip">Output as zip</option>
-						<option value="out_files" selected="true">Output as seprated files</option>
-					</param>
-					<when value="out_zip">
-					</when>
-					<when value="out_files">
-						<expand macro="output_file_selection"/>
-					</when>
-				</conditional>
-				<param name="output_label" type="text" value="" label="History output name" />
+	<conditional name="algo">
+		<param name="cluster_algo" type="select" multiple="false" label="Clustering">
+			<option value="unoise" selected="true">UNOISE</option>
+			<option value="dada2">DADA2</option>
+			<option value="dada2_nanopore">DADA2 for Nanopore data (experimental)</option>
+			<option value="cluster_otus">cluster_otus (UPARSE)</option>
+			<option value="vsearch">VSEARCH with chimera checking (--uchime_denovo)</option>
+									<option value="vsearch_no_chimera_check">VSEARCH without chimera checking</option>
+			<option value="vsearch_unoise">VSEARCH unoise with chimera checking (--uchime3_denovo)</option>
+			<option value="vsearch_unoise_no_chimera_check">VSEARCH unoise without chimera checking</option>
+		</param>
+		<when value="dada2_nanopore">
+			<param name="maxee" type="integer" min="0" max="10000" value="10" label="Discard reads with higher expected errors than this value." help="Expected errors are calculated from the nominal definition of the quality score: EE = sum(10^(-Q/10))" />
+			<param name="truncq" type="integer" min="0" max="100" value="0" label="Truncate reads at the first instance of quality score less than or equal to this parameter."/>
+		</when>
+		<when value="unoise">
+			<expand macro="unoise_macro"/>
+		</when>
+		<when value="vsearch">
+			<expand macro="vsearch_macro"/>
+		</when>
+		<when value="vsearch_no_chimera_check">
+			<expand macro="vsearch_macro"/>
+		</when>
+		<when value="cluster_otus">
+			<expand macro="cluster_otus_macro"/>
+		</when>
+		<when value="vsearch_unoise">
+			<expand macro="vsearch_unoise_macro"/>
+		</when>
+		<when value="vsearch_unoise_no_chimera_check">
+			<expand macro="vsearch_unoise_macro"/>
+		</when>
+	</conditional>
+	<param name="input_type" type="select" multiple="false" label="Input type">
+		<option value="FASTQ"/>
+		<option value="FASTA"/>
+	</param>
+	<conditional name="output_type">
+		<param name="output_files" type="select" multiple="false" label="Output">
+			<option value="out_zip">Output as zip</option>
+			<option value="out_files" selected="true">Output as seprated files</option>
+		</param>
+		<when value="out_zip">
+		</when>
+		<when value="out_files">
+			<expand macro="output_file_selection"/>
+		</when>
+	</conditional>
+	<param name="output_label" type="text" value="" label="History output name" />
 </inputs>
 <code file="dynamic_xml.py"/>
 <outputs>
