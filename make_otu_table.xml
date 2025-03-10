@@ -47,7 +47,7 @@
 	#for $collection_item in $in_format.input
 		mkdir -p sequence_files
 		&&
-		ln -s $collection_item ./sequence_files/$collection_item.element_identifier.$item_extension
+		ln -s $collection_item ./sequence_files/$collection_item.element_identifier$item_extension
 		&&
 	#end for
 	zip collection_as_zip.zip -j ./sequence_files/*
