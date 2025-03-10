@@ -16,7 +16,7 @@ requiredArguments.add_argument('-i', '--input', metavar='input zipfile', dest='i
 requiredArguments.add_argument('-t', '--input_type', metavar='FASTQ or FASTA input', dest='input_type', type=str,
                                help='Sets the input type, FASTQ or FASTA', required=True)
 requiredArguments.add_argument('-c', '--cluster_command', metavar='otu or zotu(UNOISE)', dest='cluster', type=str,
-                               help='Choice of clustering, usearch -cluster_otus or unoise', required=True, choices=['unoise', 'cluster_otus', 'vsearch', 'dada2', 'dada2_nanopore', 'vsearch_unoise', 'vsearch_unoise_no_chimera_check', 'vsearch_no_chimera_check'])
+                               help='Choice of clustering, usearch -cluster_otus or unoise', required=True, choices=['unoise', 'cluster_otus', 'vsearch', 'dada2', 'dada2_nanopore', 'vsearch_unoise', 'vsearch_unoise_no_chimera_check', 'vsearch_no_chimera_check', 'vsearch_cluster_fast'])
 requiredArguments.add_argument('-of', '--folder_output', metavar='folder output', dest='out_folder', type=str,
                                help='Folder name for the output files', required=True)
 requiredArguments.add_argument('-a', '--unoise_alpha', metavar='unoise_alpha', dest='unoise_alpha', type=str,
@@ -121,6 +121,10 @@ def usearch_cluster(outputFolder):
     if args.cluster == "vsearch_no_chimera_check":
         out, error = Popen(["vsearch", "--cluster_size", outputFolder+"/uniques_sorted.fa", "--id", args.clusterid, "--sizein", "--fasta_width", "0","--minseqlength", "1", "--relabel", "Otu", "--centroids", outputFolder+"/otu_sequences.fa"], stdout=PIPE, stderr=PIPE).communicate()
         admin_log(outputFolder, out=out.decode(), error=error.decode(), function="vsearch cluster")
+
+    if args.cluster == "vsearch_cluster_fast":
+        out, error = Popen(["vsearch", "--cluster_fast", outputFolder+"/uniques_sorted.fa", "--id", args.clusterid, "--sizein", "--fasta_width", "0","--minseqlength", "1", "--relabel", "Otu", "--centroids", outputFolder+"/otu_sequences.fa"], stdout=PIPE, stderr=PIPE).communicate()
+        admin_log(outputFolder, out=out.decode(), error=error.decode(), function="vsearch cluster fast")
 
     if args.cluster == "vsearch_unoise":
         out, error = Popen(["vsearch", "--cluster_unoise", outputFolder+"/uniques_sorted.fa", "--unoise_alpha", args.unoise_alpha,"--minsize", args.abundance_minsize,"--minseqlength", "1", "--centroids", outputFolder+"/zotusvsearch.fa"], stdout=PIPE, stderr=PIPE).communicate()

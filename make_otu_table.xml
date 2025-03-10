@@ -101,6 +101,10 @@ $algo.cluster_algo
 	#if $algo.cluster_algo == "cluster_otus"
 	    $algo.minsize
 	#end if
+	#if $algo.cluster_algo == "vsearch_cluster_fast"
+		$algo.cluster_id
+		$algo.minsize
+	#end if
 	]]>
 </command>
 <inputs>
@@ -126,6 +130,7 @@ $algo.cluster_algo
 									<option value="vsearch_no_chimera_check">VSEARCH without chimera checking</option>
 			<option value="vsearch_unoise">VSEARCH unoise with chimera checking (--uchime3_denovo)</option>
 			<option value="vsearch_unoise_no_chimera_check">VSEARCH unoise without chimera checking</option>
+			<option value="vsearch_cluster_fast">VSEARCH fast clustering</option>
 		</param>
 		<when value="dada2_nanopore">
 			<param name="maxee" type="integer" min="0" max="10000" value="10" label="Discard reads with higher expected errors than this value." help="Expected errors are calculated from the nominal definition of the quality score: EE = sum(10^(-Q/10))" />
@@ -148,6 +153,9 @@ $algo.cluster_algo
 		</when>
 		<when value="vsearch_unoise_no_chimera_check">
 			<expand macro="vsearch_unoise_macro"/>
+		</when>
+		<when value="vsearch_cluster_fast">
+			<expand macro="vsearch_macro"/>
 		</when>
 	</conditional>
 	<param name="input_type" type="select" multiple="false" label="Input type">
